@@ -1,0 +1,265 @@
+:root {
+  --bg: #191b22;
+  --surface: #232633;
+  --surface-alt: #2a2e3d;
+  --text: #eed9b9;
+  --text-soft: rgba(238, 217, 185, 0.75);
+  --accent-strong: #5e0006;
+  --accent: #9b0f06;
+  --accent-soft: #d53e0f;
+  --border: rgba(238, 217, 185, 0.2);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.auth-page {
+  display: grid;
+  place-items: center;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  border: 1px solid var(--border);
+  padding: 28px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, var(--surface), var(--surface-alt));
+  box-shadow: var(--shadow);
+}
+
+h1,
+h2 {
+  margin: 0 0 10px;
+  letter-spacing: 0.2px;
+}
+
+.muted {
+  color: var(--text-soft);
+  margin: 0 0 16px;
+}
+
+input,
+button {
+  background: rgba(14, 15, 20, 0.65);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: rgba(238, 217, 185, 0.55);
+}
+
+button {
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.12s ease, background 0.2s ease;
+  background: linear-gradient(130deg, var(--accent), var(--accent-soft));
+  border: none;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.auth-form,
+.new-list,
+.new-task {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.secondary {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.lists-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+select {
+  background: rgba(14, 15, 20, 0.65);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  flex: 1;
+}
+
+select option {
+  background: #11131a;
+  color: var(--text);
+}
+
+.danger {
+  background: var(--accent-strong);
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.sidebar,
+.workspace {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(145deg, var(--surface), var(--surface-alt));
+  box-shadow: var(--shadow);
+}
+
+.sidebar {
+  padding: 20px;
+  position: sticky;
+  top: 24px;
+}
+
+.workspace {
+  padding: 24px;
+  min-height: calc(100vh - 48px);
+}
+
+.logout-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(10, 11, 16, 0.45);
+}
+
+.check {
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  text-align: left;
+  background: transparent;
+  color: var(--text);
+}
+
+.box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--text-soft);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.check.done .box {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+
+.text {
+  position: relative;
+  display: inline-block;
+  color: var(--text);
+  transition: color 500ms ease;
+}
+
+.text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--text-soft);
+  transition: width 500ms ease;
+}
+
+.check.done .text {
+  color: var(--text-soft);
+}
+
+.check.done .text::after {
+  width: 100%;
+}
+
+.delete {
+  padding: 8px 12px;
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.message {
+  margin-top: 12px;
+  color: #ffb3a8;
+}
+
+.empty-state {
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(10, 11, 16, 0.35);
+}
+
+@media (max-width: 920px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .workspace {
+    min-height: auto;
+  }
+}
