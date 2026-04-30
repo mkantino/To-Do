@@ -1,4 +1,4 @@
-# RedBlack Todo App
+# Daily task
 
 Simple full-stack todo app with:
 - React frontend (JavaScript)

@@ -37,6 +37,8 @@ export default function App() {
   const [lists, setLists] = useState([]);
   const [activeListId, setActiveListId] = useState("");
   const [newListName, setNewListName] = useState("");
+  const [showListModal, setShowListModal] = useState(false);
+  const [showListActions, setShowListActions] = useState(false);
   const [todos, setTodos] = useState([]);
   const [newTask, setNewTask] = useState("");
   const token = session?.token || "";
@@ -148,12 +150,15 @@ export default function App() {
 
     try {
       await deleteList(token, activeListId);
-      setLists((prev) => prev.filter((l) => l._id !== activeListId));
-      setTodos([]);
-      setActiveListId((prev) => {
-        const remaining = lists.filter((l) => l._id !== prev);
-        return remaining?.[0]?._id || "";
+      let nextActiveId = "";
+      setLists((prev) => {
+        const remaining = prev.filter((l) => l._id !== activeListId);
+        nextActiveId = remaining?.[0]?._id || "";
+        return remaining;
       });
+      setTodos([]);
+      setActiveListId(nextActiveId);
+      setShowListActions(false);
     } catch (err) {
       setMessage(err.message);
     }
@@ -181,7 +186,7 @@ export default function App() {
     return (
       <main className="page auth-page">
         <section className="auth-card">
-          <h1>RedBlack Notes</h1>
+          <h1>Daily task</h1>
           <p className="muted">Simple notes and checklist workspace</p>
 
           <form onSubmit={handleAuthSubmit} className="auth-form">
@@ -221,38 +226,24 @@ export default function App() {
   return (
     <main className="page app-shell">
       <aside className="sidebar">
-        <h2>RedBlack Notes</h2>
+        <h2>Daily task</h2>
         <p className="muted">Hi {activeUser}</p>
 
-        <form onSubmit={handleCreateList} className="new-list">
-          <input
-            value={newListName}
-            onChange={(e) => {
-              setMessage("");
-              setNewListName(e.target.value);
-            }}
-            placeholder="Create a new list"
-          />
-          <button type="submit">Create list</button>
-        </form>
-
-        <div className="lists-bar">
-          <select
-            value={activeListId}
-            onChange={(e) => {
-              setMessage("");
-              setActiveListId(e.target.value);
-            }}
-          >
-            {lists.map((l) => (
-              <option key={l._id} value={l._id}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-          <button type="button" className="danger" onClick={handleDeleteActiveList}>
-            Delete
-          </button>
+        <div className="list-cards">
+          {lists.map((l) => (
+            <button
+              key={l._id}
+              type="button"
+              className={`list-card ${activeListId === l._id ? "active" : ""}`}
+              onClick={() => {
+                setMessage("");
+                setActiveListId(l._id);
+                setShowListActions(false);
+              }}
+            >
+              {l.name}
+            </button>
+          ))}
         </div>
 
         <button className="logout-btn" onClick={doLogout}>
@@ -265,6 +256,24 @@ export default function App() {
           <div>
             <h1>{activeListName}</h1>
             <p className="muted">Session auto-logout in 10 minutes</p>
+          </div>
+          <div className="list-actions">
+            <button
+              type="button"
+              className="icon-btn"
+              aria-label="Open list actions"
+              disabled={!activeListId}
+              onClick={() => setShowListActions((prev) => !prev)}
+            >
+              ...
+            </button>
+            {showListActions ? (
+              <div className="actions-menu">
+                <button type="button" className="danger" onClick={handleDeleteActiveList}>
+                  Delete list
+                </button>
+              </div>
+            ) : null}
           </div>
         </header>
 
@@ -306,6 +315,56 @@ export default function App() {
 
         {message ? <p className="message">{message}</p> : null}
       </section>
+
+      <button
+        type="button"
+        className="floating-add"
+        aria-label="Create new list"
+        onClick={() => {
+          setMessage("");
+          setShowListModal(true);
+        }}
+      >
+        +
+      </button>
+
+      {showListModal ? (
+        <div className="modal-overlay" onClick={() => setShowListModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3>Create list</h3>
+            <p className="muted">Enter name to create</p>
+            <form
+              onSubmit={async (event) => {
+                event.preventDefault();
+                if (!newListName.trim()) return;
+                await handleCreateList(event);
+                setShowListModal(false);
+              }}
+              className="new-list"
+            >
+              <input
+                value={newListName}
+                onChange={(e) => {
+                  setMessage("");
+                  setNewListName(e.target.value);
+                }}
+                placeholder="List name"
+                autoFocus
+              />
+              <div className="modal-actions">
+                <button type="submit">Create</button>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => setShowListModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
